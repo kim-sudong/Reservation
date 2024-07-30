@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hotel.book.DAO.HotelDAO">
+	<select id="getType" resultType="com.hotel.book.DTO.TypeDTO">
+		 select id,roomname from roomtype
+	</select>
+	<insert id="insertRoom">
+		insert into room set name=#{param1},type=#{param2},personnel=#{param3},price=#{param4};
+	</insert>
+	<select id="getRoom" resultType="com.hotel.book.DTO.RoomDTO">
+		select a.id,a.name,b.roomname,a.personnel,a.price
+		from room a,roomtype b
+		where a.type = b.id;
+	</select>
+	<delete id="delRoom">
+		delete from room where id=#{param1}
+	</delete>
+	<update id="upRoom">
+		update room set name=#{param1},type=#{param2},personnel=#{param3},price=#{param4} where id=#{param5};
+	</update>
+	<select id="sum" resultType="_int">
+		select sum(price) from revenue
+	</select>
+	<select id="getRoomlist" resultType="com.hotel.book.DTO.RoomDTO">
+		select a.name,a.personnel,a.price
+		from room a,roomtype b
+		where a.type=b.id and b.roomname=#{param1}
+	</select>
+	<insert id="insertlalist">
+		insert into book set room_id =#{param1},
+		howmany=#{param2}, howmuch=#{param3},checkin=#{param4},checkout=#{param5},name=#{param6},mobile=#{param7}
+	</insert>
+	<select id="getLalist" resultType="com.hotel.book.DTO.LalistDTO">
+		select a.id,a.checkin, a.checkout, b.name roomname, a.name, a.mobile, a.howmany, a.howmuch
+		from book a,room b
+		where a.room_id = b.id;
+	</select>
+	<select id="id" resultType="_int">
+		select id from room where name=#{param1}
+	
+	</select>
+	<select id="RoomT" resultType="com.hotel.book.DTO.RoomTDTO">
+		select c.roomname 
+		from book a, room b, roomtype c 
+		where a.room_id=b.id and b.type=c.id and a.id=#{param1}
+	</select>
+	<update id="updatelalist">
+		update book set room_id=#{param1},howmany=#{param2},howmuch=#{param3},checkin=#{param4},
+		checkout=#{param5},name=#{param6},mobile=#{param7} where id=#{param8}
+	</update>
+	<delete id="dellalist">
+		delete from book where id=#{param1}
+	</delete>
+</mapper>
