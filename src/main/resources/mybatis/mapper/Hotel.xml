@@ -33,7 +33,7 @@
 	<select id="getLalist" resultType="com.hotel.book.DTO.LalistDTO">
 		select a.id,a.checkin, a.checkout, b.name roomname, a.name, a.mobile, a.howmany, a.howmuch
 		from book a,room b
-		where a.room_id = b.id;
+		where a.room_id = b.id and checkout &gt;= curdate()
 	</select>
 	<select id="id" resultType="_int">
 		select id from room where name=#{param1}

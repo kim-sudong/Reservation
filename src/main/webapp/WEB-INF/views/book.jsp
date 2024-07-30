@@ -36,7 +36,7 @@ td{
 }
 </style>
 <body>
-<a href='/'><h2>객실관리</h2></a>
+<a href='/'><h2>객실관리</h2></a >
 <table  style='margin-top: 75px;'>
 	<tr>
 		<td style='vertical-align:top;'>
@@ -98,72 +98,13 @@ $(document)
 })
 .on('click','#btnsu',function(){
 	clear();
-/* 	let n = "";
-	let checkin = ($('#datein').val());
-	let checkout = ($('#dateout').val());
-	
-	let date1 = new Date($('#datein').val());
-	let date2 = new Date($('#dateout').val());
-	for (let i = 0; i<$('#lalist tbody tr').length; i++){ 
-		let date = $('#lalist tbody tr').eq(i).find('td').eq(1).text();
-		let check = date.split("~")
-		//console.log(check[0],check[1]);
-		let date3 = new Date(check[0]);
-		let date4 = new Date(check[1]);
-		console.log(date1,date2,date3,date4);
-		if(date1>=date3 && date1<=date4 || date2>=date3 && date2<=date4){
-			console.log($('#lalist tbody tr').eq(i).find('td').eq(2).text());
-			 n = $('#lalist tbody tr').eq(i).find('td').eq(2).text();
-			
-			for(let z = 0; z<$('#roomlist tfoot tr').length; z++){
-				let d = $('#roomlist tfoot tr').eq(z).find('td').eq(0).text();
-					if(n==d){
-						$('#roomlist tfoot tr').eq(z).remove();
-					}
-			}
-		}
-	}	 */
-	let type = $('#type option:selected').text();
-	console.log(type);
-	let n = "";
-	//let checkin = $('#datein').val();
-	//let checkout = $('#dateout').val();
-	
 	let date1 = new Date($('#datein').val());
 	let date2 = new Date($('#dateout').val());
 	if($('#datein').val()=='' || $('#dateout').val()=='' || date1>=date2){
 		alert('날짜를 확인해주세요');
 		return false;
 	}
-	$.post('/getTlist',{type:type},function(data){
-		console.log(data);
-		$('#roomlist tfoot').empty();
-		for( let x of data){
-			let str ='<tr><td>'+x['name']+'</td><td>'+x['person']+'</td><td>'+x['price']+'</td></tr>';
-			$('#roomlist tfoot').append(str);
-			
-		}
-	},'json').done(function(){
-		for (let i = 0; i<$('#lalist tbody tr').length; i++){ 
-			let date = $('#lalist tbody tr').eq(i).find('td').eq(1).text();
-			let check = date.split("~")
-			//console.log(check[0],check[1]);
-			let date3 = new Date(check[0]);
-			let date4 = new Date(check[1]);
-			console.log(date1,date2,date3,date4);
-			if(date1>=date3 && date1<=date4 || date2>=date3 && date2<=date4){
-				console.log($('#lalist tbody tr').eq(i).find('td').eq(2).text());
-				 n = $('#lalist tbody tr').eq(i).find('td').eq(2).text();
-				
-				for(let z = 0; z<$('#roomlist tfoot tr').length; z++){
-					let d = $('#roomlist tfoot tr').eq(z).find('td').eq(0).text();
-						if(n==d){
-							$('#roomlist tfoot tr').eq(z).remove();
-						}
-				}
-			}
-		}	
-	})
+	loadlist();
 })
 .on('click','#roomlist tfoot tr',function(){
 	clear()
@@ -213,7 +154,9 @@ $(document)
 			function(){
 						loadRlist();
 						clear();
-			},'text')
+			},'text').done(function(){
+				loadlist();
+				})
 	}
 	else{
 		console.log(checkin,checkout,latype,'['+price+']','['+person+']',name,mobile,roomname,'['+id+']');
@@ -222,7 +165,9 @@ $(document)
 		function(){
 					loadRlist();
 					clear();
-		},'text')
+		},'text').done(function(){
+			loadlist();
+		})
 		
 	}
 	
@@ -290,6 +235,45 @@ function loadRlist(){
 			$('#lalist tbody').append(str);
 		}
 	},'json')
+}
+function loadlist(){
+	let type = $('#type option:selected').text();
+	let n = "";
+	
+	let date1 = new Date($('#datein').val());
+	let date2 = new Date($('#dateout').val());
+	if($('#datein').val()=='' || $('#dateout').val()=='' || date1>=date2){
+		alert('날짜를 확인해주세요');
+		return false;
+	}
+	$.post('/getTlist',{type:type},function(data){
+		console.log(data);
+		$('#roomlist tfoot').empty();
+		for( let x of data){
+			let str ='<tr><td>'+x['name']+'</td><td>'+x['person']+'</td><td>'+x['price']+'</td></tr>';
+			$('#roomlist tfoot').append(str);
+			
+		}
+	},'json').done(function(){
+		for (let i = 0; i<$('#lalist tbody tr').length; i++){ 
+			let date = $('#lalist tbody tr').eq(i).find('td').eq(1).text();
+			let check = date.split("~")
+			let date3 = new Date(check[0]);
+			let date4 = new Date(check[1]);
+			console.log(date1,date2,date3,date4);
+			if(date1>=date3 && date1<date4 || date2>=date3 && date2<=date4){
+				console.log($('#lalist tbody tr').eq(i).find('td').eq(2).text());
+				 n = $('#lalist tbody tr').eq(i).find('td').eq(2).text();
+				
+				for(let z = 0; z<$('#roomlist tfoot tr').length; z++){
+					let d = $('#roomlist tfoot tr').eq(z).find('td').eq(0).text();
+						if(n==d){
+							$('#roomlist tfoot tr').eq(z).remove();
+						}
+				}
+			}
+		}	
+	})
 }
 </script>
 </html>
